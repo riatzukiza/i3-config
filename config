@@ -1,0 +1,75 @@
+set $mod Mod4
+
+font pango:monospace 8
+include "./conf.d/**/*.conf"
+include "./conf.d/*.conf"
+
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
+# Example: lock after 60 minutes; screen blanks after 120
+exec --no-startup-id xset s 6000 6000 dpms 12000 12000 12000
+exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock -n -c 000000
+exec --no-startup-id bash -c "source ~/.bash_profile"
+exec --no-startup-id sh -lc 'systemctl --user start emacs.service; until emacsclient -e t >/dev/null 2>&1; do sleep 0.2; done; exec emacsclient -c -n'
+
+
+# NetworkManager is the most popular way to manage wireless networks on Linux,
+# and nm-applet is a desktop environment-independent system tray GUI for it.
+exec --no-startup-id nm-applet
+
+# Use pactl to adjust volume in PulseAudio.
+set $refresh_i3status killall -SIGUSR1 i3status
+
+floating_modifier $mod
+
+tiling_drag modifier titlebar
+
+# start a terminal
+bindsym $mod+Return exec alacritty
+
+bindsym $mod+Shift+s exec flameshot gui
+
+# Toggle picom compositor (managed by systemd --user)
+bindsym $mod+Ctrl+Shift+p exec --no-startup-id bash -lc 'systemctl --user is-active --quiet picom.service && systemctl --user stop picom.service || systemctl --user start picom.service'
+
+# kill focused window
+bindsym $mod+Shift+q kill
+
+bindcode $mod+40 exec --no-startup-id i3-dmenu-desktop
+
+
+# reload the configuration file
+bindsym Mod1+Shift+c reload
+# restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
+bindsym $mod+Shift+r restart
+# exit i3 (logs you out of your X session)
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+
+# Emacs vterm on $mod+Enter
+bindsym $mod+Shift+Return exec --no-startup-id ~/bin/emvterm
+
+
+
+
+bar {
+    status_command i3blocks
+}
+# Free up the default
+# unbindsym $mod+space
+# Keep i3's old layout-toggle on a new combo (optional)
+# bindsym $mod+Shift+space focus mode_toggle
+
+# Spotlight-like launcher/switcher
+bindsym $mod+space exec --no-startup-id rofi -show combi
+# Playlist launcher (music)
+bindsym $mod+m exec --no-startup-id rofi -show playlists -modi playlists:~/.local/bin/rofi-playlists
+# Optional dedicated modes:
+# bindsym $mod+F exec --no-startup-id rofi -show files
+# bindsym $mod+P exec --no-startup-id rofi -show drun
+# bindsym $mod+W exec --no-startup-id rofi -show window
+gaps inner 5
+gaps outer 5
+
+for_window [class="plasmashell"] floating enable
+for_window [title="Desktop — Plasma"] kill, floating enable, border none
+no_focus [class="plasmashell" window_type="notification"]
+# i3 4.23 does not know Plasma's on_screen_display window type here.
