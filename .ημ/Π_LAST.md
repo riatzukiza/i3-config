@@ -32,4 +32,8 @@ i3 config syntax validated before commit.
 
 ## Push status
 
-To be filled after push.
+- **tag:** `Π/2026-07-10/170122-e5a811b`
+- **commit:** `e5a811b`
+- **branch push:** `yoga -> yoga` succeeded
+- **tag push:** `Π/2026-07-10/170122-e5a811b -> Π/2026-07-10/170122-e5a811b` succeeded
+- **remote:** `git@github.com:riatzukiza/i3-config.git`
