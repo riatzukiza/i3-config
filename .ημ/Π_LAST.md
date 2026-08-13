@@ -18,5 +18,8 @@ None detected. All changes are owned.
 ## Tag
 `Π/device/stealth/c73a301`
 
-## Commit
-`c73a301` on `device/stealth` — pushed to origin.
+## Commits
+- `c73a301` — main Π payload (config fixes + devops kit + sandbox)
+- `06c6cd2` — handoff doc update
+
+Both pushed to origin.
