@@ -1,0 +1,17 @@
+{:paths ["src" "test"]
+ :tasks
+ {lint    {:doc "Static lint of i3 config (default ~/.config/i3/config)"
+           :task (exec 'i3.cli/lint-main)}
+  parse   {:doc "Dump config IR as EDN"
+           :task (exec 'i3.cli/parse-main)}
+  check   {:doc "lint + i3 -C + live reload + error-log scan"
+           :task (exec 'i3.cli/check-main)}
+  sandbox {:doc "docker sandbox: build|up|down|shell|smoke|snapshot|shot|key|regression"
+           :task (exec 'i3.cli/sandbox-main)}
+  test    {:doc "Run clojure.test suite"
+           :task (do (require 'clojure.test)
+                     (require 'i3.config-test 'i3.lint-test)
+                     (let [{:keys [fail error]}
+                           ((resolve 'clojure.test/run-tests) 'i3.config-test 'i3.lint-test)]
+                       (when (pos? (+ fail error))
+                         (System/exit 1))))}}}

@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+# Boot Xvfb + i3 with the mounted config, then run CMD.
+# i3's own log goes to /tmp/i3.log — config parse errors land there and
+# `smoke` greps for them (this is how the comma-in-exec bug surfaces).
+set -euo pipefail
+
+Xvfb "$DISPLAY" -screen 0 1600x1000x24 -nolisten tcp &
+XVFB_PID=$!
+
+until xdpyinfo -display "$DISPLAY" >/dev/null 2>&1; do
+    sleep 0.2
+done
+
+dbus-launch i3 >/tmp/i3.log 2>&1 &
+I3_PID=$!
+
+# Give i3 a moment to parse the config (and spawn nagbar on errors).
+for _ in $(seq 1 50); do
+    i3-msg -t get_version >/dev/null 2>&1 && break
+    sleep 0.1
+done
+
+shutdown() {
+    kill "$I3_PID" "$XVFB_PID" 2>/dev/null || true
+}
+trap shutdown EXIT
+
+exec "$@"

@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Smoke test: i3 answers IPC, config reloads, and the errorlog is empty.
+# The errorlog is i3's config-error channel (nagbar displays it); runtime
+# noise (missing status bars, applets) goes to the main log and is ignored.
+# NOTE: binding-command parse errors surface at KEY PRESS time, not config
+# load — use `probe-bindings` for that class.
+set -euo pipefail
+
+i3-msg -t get_version >/dev/null
+i3-msg -t command reload >/dev/null
+sleep 0.5
+
+shopt -s nullglob
+errorlogs=(/tmp/xdg-runtime/i3/errorlog.*)
+if [ ${#errorlogs[@]} -gt 0 ] && grep -q . "${errorlogs[@]}" 2>/dev/null; then
+    echo "CONFIG ERRORS DETECTED:"
+    cat "${errorlogs[@]}" | head -20
+    exit 1
+fi
+
+echo "smoke OK: i3 $(i3-msg -t get_version | jq -r .human_readable), no config errors"
+

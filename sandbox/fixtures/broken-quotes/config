@@ -1,0 +1,11 @@
+# i3 config file (v4)
+# Deliberately broken config: comma inside mid-command quotes.
+# `bb sandbox regression` boots i3 with this, presses $mod+space via
+# xdotool, and asserts the probe FAILS — binding commands are parsed at
+# key-press time, so only synthetic input reproduces the 2026-08-09 bug.
+set $mod Mod4
+font pango:monospace 8
+
+bindsym $mod+space exec --no-startup-id rofi -show combi -modi "combi,window,drun"
+
+bindsym $mod+Return exec xterm

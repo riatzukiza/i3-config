@@ -1,0 +1,18 @@
+services:
+  sandbox:
+    build: .
+    image: i3-config-sandbox
+    container_name: i3-config-sandbox
+    volumes:
+      # The config under test, read-only. Includes resolve relative to it.
+      - ${I3_CONFIG_DIR:-..}:/home/agent/.config/i3:ro
+      # Artifacts (snapshots, screenshots) land here.
+      - ./workspace:/workspace
+    environment:
+      - DISPLAY=:99
+    healthcheck:
+      test: ["CMD", "i3-msg", "-t", "get_version"]
+      interval: 1s
+      timeout: 3s
+      retries: 30
+      start_period: 5s

@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+# Send synthetic keys to the sandbox X server.
+# Usage: send-key Super+slash [Return ...]
+set -euo pipefail
+for combo in "$@"; do
+    xdotool key --clearmodifiers "$combo"
+    sleep 0.3
+done

@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+# probe-bindings KEYCOMBO [KEYCOMBO...]
+# Press each binding via xdotool, then report any parse errors that
+# surfaced. Binding commands are only parsed by i3 at key-press time —
+# this is the ONLY way to catch bugs like commas-in-exec without a human
+# pressing keys. Run inside the sandbox where side effects are harmless.
+#
+# Uses byte offsets, not marker strings: i3's log fd has its own offset,
+# so text we append with >> lands in a different position than i3's
+# subsequent writes.
+set -euo pipefail
+
+size_before=$(stat -c%s /tmp/i3.log)
+
+for combo in "$@"; do
+    xdotool key --clearmodifiers "$combo"
+    sleep 0.4
+done
+
+sleep 1
+if tail -c +$((size_before + 1)) /tmp/i3.log | grep -q "ERROR"; then
+    echo "BINDING ERRORS DETECTED:"
+    tail -c +$((size_before + 1)) /tmp/i3.log | grep "ERROR" | head -20
+    exit 1
+fi
+echo "probe OK: $# combo(s), no binding errors"

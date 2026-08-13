@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# Screenshot the Xvfb root window (imagemagick is actually installed here,
+# unlike the spacemacs.d ancestor of this sandbox).
+set -euo pipefail
+
+out="/workspace/.artifacts/i3"
+mkdir -p "$out"
+file="$out/shot-$(date +%Y%m%dT%H%M%S).png"
+import -window root "$file"
+echo "$file"

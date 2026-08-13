@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+# Dump i3 IPC state (tree + workspaces) as timestamped JSON artifacts.
+set -euo pipefail
+
+out="/workspace/.artifacts/i3/$(date +%Y%m%dT%H%M%S)"
+mkdir -p "$out"
+i3-msg -t get_tree | jq . > "$out/tree.json"
+i3-msg -t get_workspaces | jq . > "$out/workspaces.json"
+echo "$out"
