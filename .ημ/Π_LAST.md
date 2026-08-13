@@ -16,4 +16,7 @@
 None detected. All changes are owned.
 
 ## Tag
-Pending commit.
+`Π/device/stealth/c73a301`
+
+## Commit
+`c73a301` on `device/stealth` — pushed to origin.
